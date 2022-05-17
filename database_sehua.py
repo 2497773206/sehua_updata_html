@@ -163,7 +163,7 @@ class DailyUpdate:
             fav_auths_lst=self.authors_threads,
         )
 
-        with open(f"/www/wwwroot/121.5.227.248/{self.platform['platform']}.html", "w", encoding='utf-8') as fh:#网页存放位置
+        with open(f"/www/wwwroot/网页根目录/{self.platform['platform']}.html", "w", encoding='utf-8') as fh:#网页存放位置
             fh.write(output_text)
 
     def run(self) -> None:
