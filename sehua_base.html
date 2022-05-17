@@ -1,0 +1,265 @@
+<style>
+    body,
+    input,
+    button,
+    select,
+    textarea {
+      font: 12px/1.5 Tahoma, Helvetica, "SimSun", sans-serif;
+      color: #444;
+    }
+    body,
+    ul,
+    ol,
+    li,
+    dl,
+    dd,
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    form,
+    fieldset,
+    .pr,
+    .pc {
+      margin: 0;
+      padding: 0;
+    }
+    .zz {
+      float: left;
+    }
+    .yy {
+      float: right;
+    }
+    em,
+    cite,
+    i {
+      font-style: normal;
+    }
+    a {
+      color: #333;
+      text-decoration: none;
+    }
+    .cl:after {
+      content: ".";
+      display: block;
+      height: 0;
+      clear: both;
+      visibility: hidden;
+    }
+    .waterfall {
+      position: relative;
+      margin: 15px 5px 5px 15px;
+    }
+    .waterfall li {
+      margin: 0 10px 10px 0;
+      text-align: left;
+      border-width: 1px 0 0;
+      border-top: 1px solid #eaeaea;
+      background: #fff;
+      float: left;
+      overflow: hidden;
+      bottom: 0px;
+      position: relative;
+      -webkit-transition: all ease-in-out 0.2s;
+      -moz-transition: all ease-in-out 0.2s;
+      -ms-transition: all ease-in-out 0.2s;
+      -o-transition: all ease-in-out 0.2s;
+      transition: all ease-in-out 0.2s;
+    }
+    .waterfall li:hover {
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+      -webkit-box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+      bottom: 3px;
+    }
+    .waterfall .cc,
+    .waterfall h3 {
+      padding: 10px;
+      border: solid #eaeaea;
+      border-width: 0 1px;
+      background-color: #f8f8f8;
+    }
+    .waterfall .cc,
+    .waterfall h3 {
+      font-size: 13px;
+      background: #fff;
+      border-color: #e6e6e6;
+      font-weight: normal;
+    }
+    .waterfall .cc {
+      padding: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .waterfall h3 {
+      display: block;
+    }
+    .waterfall h3 a {
+      display: block;
+      overflow: hidden;
+      width: 200px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .waterfall h3 a {
+      color: #333;
+      font-size: 16px;
+      height: 25px;
+      text-decoration: none;
+    }
+    .waterfall h3 a:hover {
+      color: #4284e2;
+      text-decoration: none;
+    }
+    .caseBlock .caseList li .imgBox:hover img {
+      -webkit-transform: scale(1.1, 1.1);
+      -moz-transform: scale(1.1, 1.1);
+      -ms-transform: scale(1.1, 1.1);
+      -o-transform: scale(1.1, 1.1);
+      transform: scale(1.1, 1.1);
+    }
+    .waterfall .auth {
+      padding: 0 10px 10px;
+      border-width: 0 1px 1px;
+      border-style: solid;
+      border-color: transparent #eaeaea #b9b9b9;
+      background: #f8f8f8;
+    }
+    .waterfall .auth {
+      background: #fff;
+      border: 1px solid #e6e6e6;
+      padding: 5px 10px;
+      color: #666;
+      position: relative;
+    }
+    .waterfall .auth .xg1,
+    .waterfall .auth a {
+      color: #aaa !important;
+      font-size: 12px;
+    }
+  </style>
+  <meta charset='utf-8'>
+  <h1>New post</h1>
+  <br />
+  <ul id="waterfall" class="ml waterfall cl">
+    {% for item in new_daily %}
+    <li>
+      <div class="cc cl">
+        <a href="{{ item[2] }}" title="{{ item[1] }}" class="zz">
+          <img
+            src="{{ item[3] }}"
+            alt="{{ item[1] }}"
+            style="
+              position: relative;
+              width: 216px;
+              height: 310px;
+              background-position: right center;
+              background-size: cover;
+              background-repeat: no-repeat;
+              margin: 2px;
+            "
+          />
+        </a>
+      </div>
+      <h3 class="xw0">
+        <a href="{{ item[2] }}" title="{{ item[1] }}">{{ item[1] }}</a>
+      </h3>
+    </li>
+    {% endfor %}
+  </ul>
+  <br />
+  <hr />
+  
+  <h1>Include posts 1</h1>
+  <br />
+  <ul id="waterfall" class="ml waterfall cl">
+    {% for item in include_rslt %}
+    <li>
+      <div class="cc cl">
+        <a href="{{ item[2] }}" title="{{ item[1] }}" class="zz">
+          <img
+            src="{{ item[3] }}"
+            alt="{{ item[1] }}"
+            style="
+              position: relative;
+              width: 216px;
+              height: 310px;
+              background-position: right center;
+              background-size: cover;
+              background-repeat: no-repeat;
+              margin: 2px;
+            "
+          />
+        </a>
+      </div>
+      <h3 class="xw0">
+        <a href="{{ item[2] }}" title="{{ item[1] }}">{{ item[1] }}</a>
+      </h3>
+    </li>
+    {% endfor %}
+  </ul>
+  <br />
+  <hr />
+  
+  <h1>Fav authors</h1>
+  <br />
+  <ul id="waterfall" class="ml waterfall cl">
+    {% for item in fav_authors_lst %}
+    <li>
+      <div class="cc cl">
+        <a href="{{ item[2] }}" title="{{ item[1] }}" class="zz">
+          <img
+            src="{{ item[3] }}"
+            alt="{{ item[1] }}"
+            style="
+              position: relative;
+              width: 216px;
+              height: 310px;
+              background-position: right center;
+              background-size: cover;
+              background-repeat: no-repeat;
+              margin: 2px;
+            "
+          />
+        </a>
+      </div>
+      <h3 class="xw0">
+        <a href="{{ item[2] }}" title="{{ item[1] }}">{{ item[1] }}</a>
+      </h3>
+    </li>
+    {% endfor %}
+  </ul>
+  <br />
+  <hr />
+  
+  <h1>Include posts 2</h1>
+  <br />
+  <ul id="waterfall" class="ml waterfall cl">
+    {% for item2 in include_2nd_rslt %}
+    <li>
+      <div class="cc cl">
+        <a href="{{ item2[2] }}" title="{{item2[1]}}" class="zz">
+          <img
+            src="{{ item2[3] }}"
+            alt="{{ item2[1] }}"
+            style="
+              position: relative;
+              width: 216px;
+              height: 310px;
+              background-position: right center;
+              background-size: cover;
+              background-repeat: no-repeat;
+              margin: 2px;
+            "
+          />
+        </a>
+      </div>
+      <h3 class="xw0">
+        <a href="{{ item2[2] }}" title="{{item2[1]}}">{{ item2[1] }}</a>
+      </h3>
+    </li>
+    {% endfor %}
+  </ul>
+  
