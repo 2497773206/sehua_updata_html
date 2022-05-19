@@ -27,6 +27,7 @@ class DailyUpdate:
         self,
         platform_name: str,
         page_num: int,
+        include: List,
         sub_list: List,
         hosts: Dict,
         sem_num: int,
@@ -52,7 +53,7 @@ class DailyUpdate:
                 "platform": "sehua",
                 "database": "sehua_title_id",
                 "template": "sehua_base.html",
-                "base_url": self.hosts["sehua"] + "/forum.php?mod=forumdisplay&fid={}&page={}&mobile=2",
+                "base_url": self.hosts["sehua"] + "/forum.php?mod=forumdisplay&fid=2&filter=typeid&typeid={}&page={}",
                 "framework": "discuz",
             },
         }
@@ -63,9 +64,9 @@ class DailyUpdate:
 
         self.page_num: int = page_num
         self.sub_list: List[int] = sub_list
+        self.include: List[str] = include
         self.sem: asyncio.Semaphore = asyncio.Semaphore(sem_num)
         self.all_threads: List[Tuple] = []
-        self.authors_threads: List[Tuple] = []
         self.match_threads: List[Tuple] = []
         self.match2_threads: List[Tuple] = []
         self.new_threads: List[Tuple] = []
@@ -120,36 +121,43 @@ class DailyUpdate:
             if url_path == "https://utnqn.com":
                 pass
             else:
-                href = self.hosts[platf_n] + "/" + url_path#链接
+                href = self.hosts[platf_n] + "/" + url_path.replace('&mobile=2', '')#链接
                 t_id = re.findall(thread_ptn, url_path)#页面id
                 t_id = ''.join(t_id)
                 title = item.xpath('.//h1/a/text()')#标题
                 title = ''.join(title)
+                if title == "":
+                    title = ''.join('暂未获取到标题')
+                    pass
                 img_src = item.xpath('.//a[1]/img/@data-original')#图片
                 img_src = ''.join(img_src)
                 author = "匿名"
                 thread_tp = (t_id, title, href, img_src, author)
-                print(thread_tp)
                 self.all_threads.append(thread_tp)
 
+
     def keyword_filter(self) -> None:
+        incld_ptn = [gen_pattern(lst) for lst in [self.include]]
+        incld_ptn = ''.join(incld_ptn)
         for thread_tp in self.all_threads:
             title, author = thread_tp[1], thread_tp[-1]
-            self.match_threads.append(thread_tp)
-            self.match2_threads.append(thread_tp)
-            self.authors_threads.append(thread_tp)
+            if re.match(incld_ptn, title, re.IGNORECASE):
+                self.match2_threads.append(thread_tp)#主播录制
+            else:
+                self.match_threads.append(thread_tp)#国产无码
 
+        
     def get_new_threads(self) -> None:
         database = self.platform["database"]
         with shelve.open(database) as db:
             for tp in (
-                self.match_threads + self.match2_threads + self.authors_threads
+                self.match_threads + self.match2_threads
             ):
                 if not db.get(str(tp[0])):
                     db[str(tp[0])] = tp[1]
                     self.new_threads.append(tp)
         print("\n @@  platform:", self.platform["platform"])
-        #pprint([[tp[1], tp[2]] for tp in self.new_threads])
+        print([[tp[1], tp[2]] for tp in self.new_threads])
 
     def generate_html(self) -> None:
         template_loader = jinja2.FileSystemLoader(searchpath="./")
@@ -157,13 +165,11 @@ class DailyUpdate:
         template_file = self.platform["template"]
         template = template_env.get_template(template_file)
         output_text = template.render(
-            include_rslt=self.match_threads,
-            include_2nd_rslt=self.match2_threads,
-            new_daily=self.new_threads,
-            fav_auths_lst=self.authors_threads,
+            include_rslt=self.match_threads,#国内原创
+            include_2nd_rslt=self.match2_threads,#主播录制
         )
 
-        with open(f"/www/wwwroot/网页根目录/{self.platform['platform']}.html", "w", encoding='utf-8') as fh:#网页存放位置
+        with open(f"/网页存放位置/sehua.html", "w", encoding='utf-8') as fh:#网页存放位置
             fh.write(output_text)
 
     def run(self) -> None:
@@ -180,6 +186,7 @@ if __name__ == "__main__":
     with open("config.json", "r", encoding='utf-8') as file:
         config = json.load(file)
     page_num_dict = config.get("page_num_dict")
+    include_kws = config.get("include")
     subs_dict = config.get("subs_dict")
     hosts_dict = config.get("hosts_dict")
     concur_num_dict = config.get("concur_num_dict")
@@ -195,6 +202,7 @@ if __name__ == "__main__":
         page_num=pages,
         sub_list=subs,
         hosts=hosts_dict,
+        include=include_kws,
         sem_num=concur_num
     )
 
